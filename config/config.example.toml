@@ -1,0 +1,95 @@
+[app]
+name = "Mail to Workchat"
+data_dir = "../.runtime"
+templates_dir = "../templates"
+snippet_chars = 500
+poll_interval_seconds = 300
+outbox_max_attempts = 6
+initial_sync = "baseline"
+auto_propose_templates = true
+default_reply_language = "ko"
+
+# Optional personal interaction layer. Keep disabled until application-bot
+# credentials and exact chat/user allowlists have been configured locally.
+[interaction]
+enabled = false
+event_ttl_seconds = 600
+response_chars = 3500
+template_confirmation_required = true
+
+[[bots]]
+id = "dingtalk-personal"
+platform = "dingtalk"
+app_id_env = "DINGTALK_APP_CLIENT_ID"
+app_secret_env = "DINGTALK_APP_CLIENT_SECRET"
+allowed_chat_ids = []
+allowed_user_ids = []
+admin_user_ids = []
+enabled = false
+require_mention = true
+
+# Standard IMAP with a password or app-specific password.
+[[accounts]]
+id = "operations"
+label = "Operations mailbox"
+host = "imap.example.com"
+port = 993
+username = "alerts@example.com"
+password_env = "MAILBOX_PASSWORD"
+folder = "INBOX"
+security = "ssl"
+enabled = true
+max_messages_per_run = 100
+max_message_bytes = 1048576
+timeout_seconds = 20
+
+# Enable one or more outgoing targets. URLs and signing secrets stay in the environment.
+[[notifiers]]
+id = "dingtalk-main"
+kind = "dingtalk"
+webhook_env = "DINGTALK_WEBHOOK_URL"
+secret_env = "DINGTALK_SIGNING_SECRET"
+enabled = true
+
+[[notifiers]]
+id = "feishu-main"
+kind = "feishu"
+webhook_env = "FEISHU_WEBHOOK_URL"
+secret_env = "FEISHU_SIGNING_SECRET"
+enabled = false
+
+[[notifiers]]
+id = "internal-hook"
+kind = "generic"
+webhook_env = "GENERIC_WEBHOOK_URL"
+allowed_hosts = ["hooks.example.com"]
+enabled = false
+
+# The first enabled rule that matches wins.
+[[rules]]
+id = "action-required"
+name = "Action-required notice"
+enabled = true
+notifier_ids = ["dingtalk-main"]
+notification_title = "New action-required email"
+reply_enabled = true
+reply_language = "ko"
+reply_subject_seed = "Re: {subject}"
+reply_body_seed = """
+안녕하세요.
+
+보내주신 메일을 확인했습니다.
+요청 번호 {case_id}에 대한 내용을 검토하고 필요한 조치를 진행하겠습니다.
+
+감사합니다.
+"""
+
+[rules.match]
+sender_regex = "(?i)^alerts@example\\.com$|<alerts@example\\.com>"
+subject_regex = "(?i)action required"
+body_regex = "(?i)case[ -]?id"
+
+[rules.fields.case_id]
+source = "body"
+pattern = "(?im)^case[ -]?id\\s*[:#]\\s*(?P<value>[A-Z0-9-]+)"
+required = true

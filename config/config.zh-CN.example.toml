@@ -1,0 +1,97 @@
+# 虚构的中文示例。请先复制为 config.toml，再填写私有配置。
+# 语言标记不会自动翻译；请保留非空的 reply_body_seed。
+[app]
+name = "Mail to Workchat"
+data_dir = "../.runtime"
+templates_dir = "../templates"
+snippet_chars = 500
+poll_interval_seconds = 300
+outbox_max_attempts = 6
+initial_sync = "baseline"
+auto_propose_templates = true
+default_reply_language = "zh-CN"
+
+# 可选个人交互层。在本地配置好应用机器人凭据及准确的群／用户白名单之前，
+# 请保持关闭。
+[interaction]
+enabled = false
+event_ttl_seconds = 600
+response_chars = 3500
+template_confirmation_required = true
+
+[[bots]]
+id = "dingtalk-personal"
+platform = "dingtalk"
+app_id_env = "DINGTALK_APP_CLIENT_ID"
+app_secret_env = "DINGTALK_APP_CLIENT_SECRET"
+allowed_chat_ids = []
+allowed_user_ids = []
+admin_user_ids = []
+enabled = false
+require_mention = true
+
+# 使用密码或应用专用密码的标准 IMAP。
+[[accounts]]
+id = "operations"
+label = "示例邮箱"
+host = "imap.example.com"
+port = 993
+username = "alerts@example.com"
+password_env = "MAILBOX_PASSWORD"
+folder = "INBOX"
+security = "ssl"
+enabled = true
+max_messages_per_run = 100
+max_message_bytes = 1048576
+timeout_seconds = 20
+
+# 启用一个或多个通知目标。URL 和签名密钥仅保存在环境变量中。
+[[notifiers]]
+id = "dingtalk-main"
+kind = "dingtalk"
+webhook_env = "DINGTALK_WEBHOOK_URL"
+secret_env = "DINGTALK_SIGNING_SECRET"
+enabled = true
+
+[[notifiers]]
+id = "feishu-main"
+kind = "feishu"
+webhook_env = "FEISHU_WEBHOOK_URL"
+secret_env = "FEISHU_SIGNING_SECRET"
+enabled = false
+
+[[notifiers]]
+id = "internal-hook"
+kind = "generic"
+webhook_env = "GENERIC_WEBHOOK_URL"
+allowed_hosts = ["hooks.example.com"]
+enabled = false
+
+# 按顺序使用第一个匹配且启用的规则。
+[[rules]]
+id = "action-required"
+name = "待处理通知"
+enabled = true
+notifier_ids = ["dingtalk-main"]
+notification_title = "收到待处理邮件"
+reply_enabled = true
+reply_language = "zh-CN"
+reply_subject_seed = "Re: {subject}"
+reply_body_seed = """
+您好，
+
+已收到您的邮件。
+我们将核对事项 {case_id}，并确认后续处理安排。
+
+谢谢。
+"""
+
+[rules.match]
+sender_regex = "(?i)^alerts@example\\.com$|<alerts@example\\.com>"
+subject_regex = "(?i)action required"
+body_regex = "(?i)case[ -]?id"
+
+[rules.fields.case_id]
+source = "body"
+pattern = "(?im)^case[ -]?id\\s*[:#]\\s*(?P<value>[A-Z0-9-]+)"
+required = true

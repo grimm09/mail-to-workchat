@@ -1,0 +1,40 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data may contain email metadata and reply drafts
+/.runtime/
+/config/config.toml
+/config/*.local.toml
+*.local.json
+/data/
+/drafts/
+/proposals/
+/templates/
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+/.test-tmp/
+/.test-install/
+/.build-tmp/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

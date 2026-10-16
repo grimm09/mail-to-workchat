@@ -1,0 +1,17 @@
+# Select one language only; see docs/languages.md.
+id = "action-required"
+description = "虚构的中文确认收悉示例。请审查后再在本地使用。"
+approved = true
+language = "zh-CN"
+reply_subject = "Re: {subject}"
+reply_body = "您好，\n\n已收到您的邮件。\n我们将核对事项 {case_id}，并确认后续处理安排。\n\n谢谢。"
+
+[match]
+sender_regex = "(?i)^alerts@example\\.com$|<alerts@example\\.com>"
+subject_regex = "(?i)action required"
+body_regex = "(?i)case[ -]?id"
+
+[fields.case_id]
+source = "body"
+pattern = "(?im)^case[ -]?id\\s*[:#]\\s*(?P<value>[A-Z0-9-]+)"
+required = true

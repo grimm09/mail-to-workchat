@@ -1,0 +1,15 @@
+From: Example Alerts <alerts@example.com>
+To: Operations <operations@example.com>
+Date: Tue, 13 Oct 2026 07:30:00 +0000
+Message-ID: <sample-1001@example.com>
+Subject: [Action Required] Review case EX-1001
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Hello,
+
+Case ID: EX-1001
+Please review the supplied information before the deadline.
+
+Thank you.

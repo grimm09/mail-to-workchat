@@ -1,0 +1,16 @@
+id = "action-required"
+description = "Example reviewed Korean acknowledgement template."
+approved = true
+language = "ko"
+reply_subject = "Re: {subject}"
+reply_body = "안녕하세요.\n\n요청 번호 {case_id}에 대한 메일을 확인했습니다. 필요한 조치를 검토하겠습니다.\n\n감사합니다."
+
+[match]
+sender_regex = "(?i)^alerts@example\\.com$|<alerts@example\\.com>"
+subject_regex = "(?i)action required"
+body_regex = "(?i)case[ -]?id"
+
+[fields.case_id]
+source = "body"
+pattern = "(?im)^case[ -]?id\\s*[:#]\\s*(?P<value>[A-Z0-9-]+)"
+required = true

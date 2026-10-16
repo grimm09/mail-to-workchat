@@ -1,0 +1,17 @@
+# Select one language only; see docs/languages.md.
+id = "action-required"
+description = "Fictional English acknowledgement example. Review before local use."
+approved = true
+language = "en"
+reply_subject = "Re: {subject}"
+reply_body = "Hello,\n\nThank you for your email.\nWe will review case {case_id} and determine the next steps.\n\nThank you."
+
+[match]
+sender_regex = "(?i)^alerts@example\\.com$|<alerts@example\\.com>"
+subject_regex = "(?i)action required"
+body_regex = "(?i)case[ -]?id"
+
+[fields.case_id]
+source = "body"
+pattern = "(?im)^case[ -]?id\\s*[:#]\\s*(?P<value>[A-Z0-9-]+)"
+required = true

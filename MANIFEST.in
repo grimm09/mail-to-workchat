@@ -1,0 +1,16 @@
+include README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md LICENSE
+include README.zh-CN.md CHANGELOG.zh-CN.md CONTRIBUTING.zh-CN.md SECURITY.zh-CN.md
+include .gitignore .dockerignore .gitattributes .env.example Dockerfile
+include config/config.example.toml
+include config/config.en.example.toml config/config.zh-CN.example.toml
+recursive-include docs *.md
+recursive-include templates.example *.toml
+recursive-include tests *.py
+include tests/fixtures/sample_alert.eml
+global-exclude *.py[cod]
+global-exclude *.local.toml *.local.json *.sqlite3 *.sqlite3-* *.db *.db-* *.log
+prune .runtime
+prune templates
+prune .test-tmp
+prune .test-install
+prune .build-tmp
